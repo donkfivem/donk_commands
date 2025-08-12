@@ -5,7 +5,7 @@ local frozenPlayers = {}
 
 -- Register admin rank callback
 lib.callback.register('donk_commands:server:getPlayersAdminRank', function(source)
-    return IsPlayerAceAllowed(source, 'god') or IsPlayerAceAllowed(source, 'admin') or IsPlayerAceAllowed(source, 'mod')
+    return IsPlayerAceAllowed(source, 'admin')
 end)
 
 -- Command: Bring a player to you
@@ -38,37 +38,22 @@ lib.addCommand('bringback', {
     end
 end)
 
--- Command: Teleport to player or coordinates
+-- Command: Teleport to player
 lib.addCommand('goto', {
-    help = 'Teleport yourself to the player or coordinates (Admin only)',
+    help = 'Teleport yourself to a player (Admin only)',
     restricted = 'group.admin',
     params = {
-        { name = 'id_x', help = 'ID of player or X position', type = 'string' },
-        { name = 'y', help = 'Y position', type = 'number', optional = true },
-        { name = 'z', help = 'Z position', type = 'number', optional = true }
+        { name = 'id', help = 'ID of player', type = 'number' }
     }
 }, function(source, args)
-    if args.y and args.z then
-        -- Assume coordinates
-        local x = tonumber(args.id_x)
-        local y = args.y
-        local z = args.z
-        if x and y and z then
-            TriggerClientEvent('donk_commands:client:teleportToCoords', source, x + 0.0, y + 0.0, z + 0.0)
-        else
-            lib.notify({ id = source, description = 'Invalid coordinate format.', type = 'error' })
-        end
+    local targetId = args.id
+    if GetPlayerPed(targetId) and GetPlayerPed(targetId) ~= 0 then
+        local coords = GetEntityCoords(GetPlayerPed(targetId))
+        TriggerClientEvent('donk_commands:client:teleportToPlayer', source, coords)
     else
-        local targetId = tonumber(args.id_x)
-        if targetId and GetPlayerPed(targetId) ~= 0 then
-            local coords = GetEntityCoords(GetPlayerPed(targetId))
-            TriggerClientEvent('donk_commands:client:teleportToPlayer', source, coords)
-        else
-            lib.notify({ id = source, description = 'This player is not online or invalid ID.', type = 'error' })
-        end
+        lib.notify({ id = source, description = 'This player is not online or invalid ID.', type = 'error' })
     end
 end)
-
 
 -- Command: Set ped model
 lib.addCommand('setmodel', {
@@ -230,7 +215,7 @@ lib.addCommand('clearcars', {
 end)
 
 -- Command: Clear props (server-side)
-lib.addCommand('clearprops', {
+lib.addCommand('serverclearprops', {
     help = 'Government (Admin Only) - Clear Props',
     restricted = 'group.admin'
 }, function(source)

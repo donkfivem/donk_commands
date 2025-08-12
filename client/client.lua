@@ -65,9 +65,13 @@ end)
 
 -- Warp into vehicle
 RegisterNetEvent('donk_commands:commands:warpinvehicle', function()
-    local vehicle = QBX:GetClosestVehicle()
-    TaskWarpPedIntoVehicle(PlayerPedId(), vehicle, -1)
-    exports.wasabi_carlock:GiveKey(vehicle)
+    local playerPed = PlayerPedId()
+    local vehicle = lib.GetClosestVehicle(GetEntityCoords(playerPed), 10.0, false)
+    if vehicle and vehicle ~= 0 then
+        if DoesEntityExist(vehicle) then
+            TaskWarpPedIntoVehicle(playerPed, vehicle, -1)
+        end
+    end
 end)
 
 -- Performance upgrade for vehicle
@@ -235,11 +239,5 @@ end)
 -- Teleport to player
 RegisterNetEvent('donk_commands:client:teleportToPlayer', function(coords)
     local ped = PlayerPedId()
-    SetEntityCoords(ped, coords.x, coords.y, coords.z)
-end)
-
--- Teleport to coordinates
-RegisterNetEvent('donk_commands:client:teleportToCoords', function(x, y, z)
-    local ped = PlayerPedId()
-    SetEntityCoords(ped, x, y, z)
+    SetEntityCoords(ped, coords.x, coords.y, coords.z, false, false, false, true)
 end)
