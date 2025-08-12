@@ -74,8 +74,8 @@ See [CHANGELOG.md](CHANGELOG.md) for a detailed history of changes.
 
 ## Credits
 
-- **Author**: [Your Name]
-- **Framework**: QBOX Development Team
+- **Author**: Donk
+- **Framework**: Qbox Framework
 - **Dependencies**: Overextended (ox_lib)
 
 ---
